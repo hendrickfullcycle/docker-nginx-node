@@ -15,20 +15,17 @@ const ddl = `CREATE TABLE IF NOT EXISTS people(id int NOT NULL AUTO_INCREMENT, n
 connection.query(ddl)
 
 app.get('/',  (req,res) => {
-    console.log(req.query)
-    let responseHTML = '<h1>Full Cycle</h1> <ul>'
     const query = util.promisify(connection.query).bind(connection);
-
     (async () => {
+        let responseHTML = '<h1>Full Cycle</h1> <ul>'
         await query(`INSERT INTO people(name) values('${req.query.name}')`)
-
         const rows = await query('select * from people');
         rows.forEach(item => {
             responseHTML += `<li>${item.name}</li>`
         });
+        responseHTML += `</ul>`
         res.send(responseHTML)       
     })()
-   
 })
 
 app.listen(port, ()=> {
